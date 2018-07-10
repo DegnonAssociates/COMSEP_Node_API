@@ -75,18 +75,22 @@ function valToken(req, res) {
 		jwt.verify(token, settings.secret, function (err, decoded) {
 			if (err) {
 				httpMsgs.show400(req, res);
+				return false;
 			} else {
 				// authn passed, save to request for use in other routes
 				req.decoded = decoded;
+				return true;
 
 			}
 		});
 	} else {
 		if( req.headers['authorization'] ){
 			authn.getAuthn(req, res);
+			return true;
 		} else {
 			// if no token or auth is passed return an error
 			httpMsgs.show401(req, res);
+			return false;
 		}
 		
 	}
@@ -95,124 +99,156 @@ function valToken(req, res) {
 // member GET all POST routes
 	router.route('/members')
 		.get(function (req, res) {
-			valToken(req, res);
-			member.getList(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				member.getList(req, res);		
+			} 
 		})
 		.post(function (req, res) { 
-			valToken(req, res);
-			member.add(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				member.add(req, res);		
+			} 
 	});
 
 
 	// member GET one PUT DELETE routes
 	router.route('/members/:memberId')
 		.get(function (req, res) { 
-			valToken(req, res);
-			var memIdPatt = "[0-9]+";
-			var patt = new RegExp("/members/" + memIdPatt);
-			if (patt.test(req.url)) {
-				patt = new RegExp(memIdPatt);
-				var memberId = patt.exec(req.url);
-				member.get(req, res, memberId);
-			} else {
-				httpMsgs.show404(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				var memIdPatt = "[0-9]+";
+				var patt = new RegExp("/members/" + memIdPatt);
+				if (patt.test(req.url)) {
+					patt = new RegExp(memIdPatt);
+					var memberId = patt.exec(req.url);
+					member.get(req, res, memberId);
+				} else {
+					httpMsgs.show404(req, res);
+				}
 			}
 		})
 		.put(function (req, res) {
-			valToken(req, res);
-			var memIdPatt = "[0-9]+";
-			var patt = new RegExp("/members/" + memIdPatt);
-			if (patt.test(req.url)) {
-				patt = new RegExp(memIdPatt);
-				var memberId = patt.exec(req.url);
-				member.update(req, res, memberId);
-			} else {
-				httpMsgs.show404(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				var memIdPatt = "[0-9]+";
+				var patt = new RegExp("/members/" + memIdPatt);
+				if (patt.test(req.url)) {
+					patt = new RegExp(memIdPatt);
+					var memberId = patt.exec(req.url);
+					member.update(req, res, memberId);
+				} else {
+					httpMsgs.show404(req, res);
+				}
 			}
 		})
 		.post(function (req, res) {
-			valToken(req, res);
-			var memIdPatt = "[0-9]+";
-			var patt = new RegExp("/members/" + memIdPatt);
-			if (patt.test(req.url)) {
-				patt = new RegExp(memIdPatt);
-				var memberId = patt.exec(req.url);
-				member.update(req, res, memberId);
-			} else {
-				httpMsgs.show404(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				var memIdPatt = "[0-9]+";
+				var patt = new RegExp("/members/" + memIdPatt);
+				if (patt.test(req.url)) {
+					patt = new RegExp(memIdPatt);
+					var memberId = patt.exec(req.url);
+					member.update(req, res, memberId);
+				} else {
+					httpMsgs.show404(req, res);
+				}
 			}
 		})
 		.delete(function (req, res) {
-			valToken(req, res);
-			member.delete(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				member.delete(req, res);
+			}
 	});
 
 	// activities GET all POST routes
 	router.route('/activities')
 		.get(function (req, res) {
-			valToken(req, res);
-			activity.getList(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activity.getList(req, res);
+			}
 		})
 		.post(function (req, res) { 
-			valToken(req, res);
-			activity.add(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activity.add(req, res);
+			}
 	});
 
 	// activities GET one PUT DELETE routes
 	router.route('/activities/:memberId')
 		.get(function (req, res) { 
-			valToken(req, res);
-			var memIdPatt = "[0-9]+";
-			var patt = new RegExp("/activities/" + memIdPatt);
-			if (patt.test(req.url)) {
-				patt = new RegExp(memIdPatt);
-				var memberId = patt.exec(req.url);
-				activity.get(req, res, memberId);
-			} else {
-				httpMsgs.show404(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				var memIdPatt = "[0-9]+";
+				var patt = new RegExp("/activities/" + memIdPatt);
+				if (patt.test(req.url)) {
+					patt = new RegExp(memIdPatt);
+					var memberId = patt.exec(req.url);
+					activity.get(req, res, memberId);
+				} else {
+					httpMsgs.show404(req, res);
+				}
 			}
 		})
 		.put(function (req, res) {
-			valToken(req, res);
-			activity.update(req, res, memberId);
+			var t = valToken(req, res);
+			if( t ){
+				activity.update(req, res, memberId);
+			}
 		})
 		.delete(function (req, res) {
-			valToken(req, res);
-			activity.delete(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activity.delete(req, res);
+			}
 	});
 
 	// activityCode GET all POST routes
 	router.route('/activityCodes')	
 		.get(function (req, res) {
-			valToken(req, res);
-			activityCode.getList(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activityCode.getList(req, res);
+			}
 		})
 		.post(function (req, res) { 
-			valToken(req, res);
-			activityCode.add(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activityCode.add(req, res);
+			}
 	});
 
 	// activityCode GET one PUT DELETE routes
 	router.route('/activityCodes/:activityId')
 		.get(function (req, res) { 
-			valToken(req, res);
-			var activityIdPatt = "[0-9]+";
-			var patt = new RegExp("/activityCode/" + activityIdPatt);
-			if (patt.test(req.url)) {
-				patt = new RegExp(activityIdPatt);
-				var activityId = patt.exec(req.url);
-				activity.get(req, res, activitysId);
-			} else {
-				httpMsgs.show404(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				var activityIdPatt = "[0-9]+";
+				var patt = new RegExp("/activityCode/" + activityIdPatt);
+				if (patt.test(req.url)) {
+					patt = new RegExp(activityIdPatt);
+					var activityId = patt.exec(req.url);
+					activity.get(req, res, activitysId);
+				} else {
+					httpMsgs.show404(req, res);
+				}
 			}
 		})
 		.put(function (req, res) {
-			valToken(req, res);
-			activityCode.update(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activityCode.update(req, res);
+			}
 		})
 		.delete(function (req, res) {
-			valToken(req, res);
-			activityCode.delete(req, res);
+			var t = valToken(req, res);
+			if( t ){
+				activityCode.delete(req, res);
+			}
 	});
 
 
